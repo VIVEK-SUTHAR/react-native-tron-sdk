@@ -1,0 +1,44 @@
+Properties properties = new Properties()
+println "Root project directory: ${rootProject.projectDir}"
+
+File localProps = new File(rootProject.projectDir, "local.properties")
+if (localProps.exists()) {
+    properties.load(localProps.newDataInputStream())
+    println "Authenticating user: " + properties.getProperty("gpr.user")
+} else {
+    println "local.properties not found, please create it next to build.gradle and set gpr.user and gpr.key (Create a GitHub package read only + non expiration token at https://github.com/settings/tokens)\n" +
+            "Or set GITHUB_USER and GITHUB_TOKEN environment variables"
+}
+buildscript {
+    ext {
+        buildToolsVersion = "34.0.0"
+        minSdkVersion = 23
+        compileSdkVersion = 34
+        targetSdkVersion = 34
+        ndkVersion = "25.1.8937393"
+        kotlinVersion = "1.8.0"
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
+
+allprojects {
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/trustwallet/wallet-core")
+            credentials {
+                username = properties.getProperty("gpr.user") as String?: System.getenv("GITHUB_USER")
+                password = properties.getProperty("gpr.key") as String?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
