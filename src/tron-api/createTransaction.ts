@@ -1,3 +1,5 @@
+import { TronRpc } from '../tron-rpc';
+
 export type CreateTransactionRequest = {
   owner_address: string;
   to_address: string;
@@ -37,24 +39,18 @@ export default async function createTransaction(
     throw new Error('owner_address, to_address and amount are required');
   }
   try {
-    let headersList = {
-      'Accept': '*/*',
-      'Content-Type': 'application/json',
-    };
     let bodyContent = JSON.stringify({
       owner_address: owner_address,
       to_address: to_address,
       visible: true,
       amount: amount,
     });
-    let response = await fetch(
-      'https://nile.trongrid.io/wallet/createtransaction',
-      {
-        method: 'POST',
-        body: bodyContent,
-        headers: headersList,
-      }
-    );
+    const URL = TronRpc.currentRpcUrl + '/wallet/createtransaction';
+    let response = await fetch(URL, {
+      method: 'POST',
+      body: bodyContent,
+      headers: TronRpc.commonHeaders,
+    });
     const jsonResponse = await response.json();
     if (jsonResponse && jsonResponse.Error) {
       throw new Error(`Error creating transaction: ${jsonResponse.Error}`);

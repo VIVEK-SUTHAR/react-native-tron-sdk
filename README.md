@@ -8,6 +8,7 @@ The `react-native-tron-sdk` provides a set of functions for creating, importing,
 
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Init the SDK](#init)
   - [Create a Wallet](#create-a-wallet)
   - [Import a Wallet](#import-a-wallet)
   - [Sign a Message](#sign-a-message)
@@ -21,8 +22,10 @@ npm install react-native-tron-sdk
 ```
 
 ### Android Only Setup
+
 Since this library relies on TrustWalletCore for MultiCoin Wallet Management,and the it's android releases are hosted on GitHub packages, It needs authentication to download packages.For this You need to have a GPR Token.
 You can generate a Token via below steps
+
 - [Go to here](https://github.com/settings/tokens)
 - Name your Token
 - Set Expiration Time to Never
@@ -36,8 +39,30 @@ gpr.user=YOUR_GITHUB_USER_NAME
 gpr.key=YOUR_GENERATED_GPR_TOKEN
 ```
 
-
 ## Usage
+
+### Init
+
+Initializes the Tron SDK.
+You can add your own RPC by using this method
+Along with RPC url you can add an object containing custom headers to be sent with each request.
+Each key is a header name and each value is the corresponding header value.
+You can use this to add an API key or other authentication headers
+
+- Note: The headers are added to every request made by the SDK
+- By default, the SDK uses the Nile testnet Public RPC URL
+
+```javascript
+//App.tsx or your main entry file
+import { init } from 'react-native-tron-sdk';
+
+//Set your own rpc
+init('https://YOUR_OWN_RPC');
+/*  or add headers */
+init('https://YOUR_OWN_RPC', {
+  'X-API-KEY': 'My super key',
+});
+```
 
 ### Create a Wallet
 
@@ -78,10 +103,11 @@ const signature = await signMessage(message, privateKey);
 console.log(signature);
 ```
 
-
 ### Send a Transaction
+
 Send a transaction with the specified options:
 This can be used to send Native TRX Transfer as well as TRC20 Tokens
+
 ```javascript
 import { sendTransaction } from 'react-native-tron-sdk';
 const txnOptions = {
@@ -93,11 +119,13 @@ const txnOptions = {
 const hash = await sendTransaction(txnOptions);
 console.log('Transaction Hash: ', hash);
 ```
+
 ### Sun Conversion
+
 Convert TRX to SUN and SUN to TRX using the provided utility functions:
 
 ```javascript
-import { trxToSun,sunToTrx } from 'react-native-tron-sdk';
+import { trxToSun, sunToTrx } from 'react-native-tron-sdk';
 const trxAmount = 1.5;
 const sunAmount = trxToSun(trxAmount);
 console.log(`${trxAmount} TRX is equal to ${sunAmount} SUN`);
@@ -106,9 +134,8 @@ const convertedTrxAmount = sunToTrx(sunAmount);
 console.log(`${sunAmount} SUN is equal to ${convertedTrxAmount} TRX`);
 ```
 
-
-
 ## Note
+
 For transaction amounts, 1 TRX is equivalent to 1,000,000 SUN. The SDK includes utility functions for converting between TRX and SUN.
 
 The SDK handles both TRX transactions and TRC20 token transactions. Specify the contract_address in the options to send a TRC20 transaction.

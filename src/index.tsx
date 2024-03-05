@@ -31,7 +31,25 @@ const TronSdk = TronSdkModule
       }
     );
 
-export function setRpcUrl(rpcUrl: string): void {
+/**
+ * Initializes the Tron SDK
+ * @param rpcUrl The RPC URL to use
+ * @param customHeaders Custom headers to use
+ * Custom headers are used to authenticate requests to the RPC URL
+ * You can use this to add an API key or other authentication headers
+ * Note: The headers are added to every request made by the SDK
+ *
+ * By default, the SDK uses the Nile testnet Public RPC URL
+ * @returns void
+ * */
+export function init(
+  rpcUrl: string,
+  customHeaders?: Record<string, string>
+): void {
+  if (customHeaders) {
+    TronRpc.setRpcUrl(rpcUrl, customHeaders);
+    return;
+  }
   TronRpc.setRpcUrl(rpcUrl);
 }
 

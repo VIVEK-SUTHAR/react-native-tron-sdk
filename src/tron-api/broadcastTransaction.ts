@@ -1,3 +1,5 @@
+import { TronRpc } from '../tron-rpc';
+
 type BroadcastTransactionRequest = {
   signedTransaction: string;
 };
@@ -9,18 +11,12 @@ export async function broadcastTransaction({
   signedTransaction,
 }: BroadcastTransactionRequest): Promise<BroadcastTransactionResponse> {
   try {
-    let headersList = {
-      'Accept': '*/*',
-      'Content-Type': 'application/json',
-    };
-    let broadcastResponse = await fetch(
-      'https://nile.trongrid.io/wallet/broadcasttransaction',
-      {
-        method: 'POST',
-        body: signedTransaction,
-        headers: headersList,
-      }
-    );
+    const URL = TronRpc.currentRpcUrl + '/wallet/broadcasttransaction';
+    let broadcastResponse = await fetch(URL, {
+      method: 'POST',
+      body: signedTransaction,
+      headers: TronRpc.commonHeaders,
+    });
     let broadcastData = await broadcastResponse.json();
     return broadcastData;
   } catch (error) {
