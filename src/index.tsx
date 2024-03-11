@@ -7,6 +7,9 @@ import type { BroadcastTransactionResponse } from './tron-api/broadcastTransacti
 import { TronRpc } from './tron-rpc';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
+import getAllTransactions, {
+  type TransactionsRequest,
+} from './tron-api/accounts/getAllTrxTransactions';
 const LINKING_ERROR =
   `The package 'react-native-tron-sdk' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
@@ -118,7 +121,7 @@ export type SendTransactionOptions = {
 
 /**
  * Sends a transaction
- * @param options The transaction options
+ * @param options The transaction options 
  * @returns string
  *
  * The amount should be in SUN,See the example below
@@ -173,6 +176,9 @@ export function trxToSun(trxAmount: number) {
 // Function to convert SUN to TRX
 export function sunToTrx(sunAmount: number) {
   return sunAmount / TRX_TO_SUN_FACTOR;
+}
+export function getTransactions(options: TransactionsRequest) {
+  return getAllTransactions(options);
 }
 
 /**

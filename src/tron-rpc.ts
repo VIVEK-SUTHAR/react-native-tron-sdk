@@ -4,6 +4,7 @@ export class TronRpc {
   static commonHeaders: Record<string, string> = {
     'Accept': '*/*',
     'Content-Type': 'application/json',
+    'TRON-PRO-API-KEY': 'd8184913-2573-4d56-82c3-5f67d102bb03',
   };
 
   static setRpcUrl(

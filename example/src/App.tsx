@@ -7,6 +7,7 @@ import SignMessage from './components/SignMessage';
 import SendTransaction from './components/SendTransaction';
 import Heading from './components/Heading';
 import SendTRC20Transaction from './components/SendTRC20Txn';
+import AllTransactions from './components/AllTransactions';
 export default function App() {
   return (
     <SafeAreaView style={styles.flex1}>
@@ -21,6 +22,7 @@ export default function App() {
         <ImportWallet />
         <SendTransaction />
         <SendTRC20Transaction />
+        <AllTransactions  />
         <SignMessage />
       </ScrollView>
     </SafeAreaView>
