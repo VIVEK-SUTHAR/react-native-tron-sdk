@@ -1,6 +1,6 @@
 import { signTxId, type SendTransactionOptions } from 'react-native-tron-sdk';
 import { broadcastTransaction } from './broadcastTransaction';
-import { AbiCoder, toBeHex } from 'ethers';
+import { AbiCoder, ParamType, toBeHex } from 'ethers';
 import type { SendSmartContractOptions } from './triggerSmartContract';
 import * as bs58 from 'bs58';
 import triggerSmartContract from './triggerSmartContract';
@@ -74,7 +74,11 @@ function encodeParams(inputs: any[]) {
 }
 
 const ADDRESS_PREFIX = '41';
-export function decodeParams(types, output, ignoreMethodHash) {
+export function decodeParams(
+  types: (string | ParamType)[],
+  output: any,
+  ignoreMethodHash: boolean
+) {
   if (!output || typeof output === 'boolean') {
     ignoreMethodHash = output;
     output = types;
