@@ -13,6 +13,11 @@ export interface Spec extends TurboModule {
   ): Promise<ImportWallerResponse>;
   signTxId(transactionId: string, privateKey: string): Promise<string>;
   signMessage(messageToSign: string, privateKey: string): Promise<string>;
+  createWalletSync(passPhrase?: string): CreateWalletResponse;
+  importWalletSync(
+    seedPhrase: string,
+    passPhrase?: string
+  ): ImportWallerResponse;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('TronSdk');

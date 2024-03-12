@@ -1,6 +1,6 @@
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import React, { useState } from 'react';
-import { importWallet, type ImportWallerResponse } from 'react-native-tron-sdk';
+import { type ImportWallerResponse, importWalletSync } from 'react-native-tron-sdk';
 import Container from './Container';
 import { displaySubstring } from '../util/withPerf';
 import Heading from './Heading';
@@ -13,14 +13,25 @@ const ImportWallet = () => {
   const [walletResponse, setWalletResponse] = useState<ImportWallerResponse>();
 
   async function handleImportWallet() {
-    importWallet(TEST_MNEMONIC)
-      .then((response) => {
-        setWalletResponse(response);
-      })
-      .catch((error) => {
-        console.log('Error: ', error);
-        Alert.alert('Error', error.message);
-      });
+    try {
+      //Synchornous Method
+      const res = importWalletSync(TEST_MNEMONIC);
+      setWalletResponse(res);
+      //Asynchornous Method
+      //const asyncWallet=await importWallet(TEST_MNEMONIC);
+      //setWalletResponse(asyncWallet);
+    } catch (error) {
+      console.log('Error', error);
+   
+    }
+    // importWallet(TEST_MNEMONIC)
+    //   .then((response) => {
+    //     setWalletResponse(response);
+    //   })
+    //   .catch((error) => {
+    //     console.log('Error: ', error);
+    //     Alert.alert('Error', error.message);
+    //   });
   }
   return (
     <Container>

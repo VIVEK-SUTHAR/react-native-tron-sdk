@@ -69,10 +69,16 @@ init('https://YOUR_OWN_RPC', {
 Create a new multi-coin wallet with an optional passphrase for encryption:
 
 ```javascript
-import { createWallet } from 'react-native-tron-sdk';
+import { createWallet,createWalletSync } from 'react-native-tron-sdk';
 const passphrase = 'my_secure_passphrase';
+//Asynchornous method
 const wallet = await createWallet(passphrase);
 console.log(wallet);
+
+//Synchornous Method
+const res = createWalletSync();
+console.log(res)
+
 ```
 
 The createWallet function returns an object with privateKey, publicKey, and seedPhrase.
@@ -82,11 +88,16 @@ The createWallet function returns an object with privateKey, publicKey, and seed
 Import an existing wallet using the seed phrase and an optional passphrase:
 
 ```javascript
-import { importWallet } from 'react-native-tron-sdk';
+import { importWallet,importWalletSync } from 'react-native-tron-sdk';
 const passphrase = 'my_secure_passphrase';
 const seedPharse = 'SOME SECREAT RANDOM SECURE SEED';
 const wallet = await importWallet(seedPharse, passphrase);
 console.log(wallet);
+
+//Synchornous Method
+const res = importWalletSync();
+console.log(res)
+
 ```
 
 The importWallet function returns the same structure as createWallet.

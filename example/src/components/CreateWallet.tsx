@@ -1,6 +1,8 @@
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import React, { useState } from 'react';
-import { type CreateWalletResponse, createWallet } from 'react-native-tron-sdk';
+import {
+  type CreateWalletResponse, createWalletSync
+} from 'react-native-tron-sdk';
 import Container from './Container';
 import { displaySubstring } from '../util/withPerf';
 import Heading from './Heading';
@@ -11,14 +13,16 @@ const CreateWallet = () => {
   const [walletResponse, setWalletResponse] = useState<CreateWalletResponse>();
 
   async function handleCreateWallet() {
-    createWallet()
-      .then((response) => {
-        setWalletResponse(response);
-      })
-      .catch((error) => {
-        console.log('Error: ', error);
-        Alert.alert('Error', error.message);
-      });
+    try {
+      //Synchornous Method
+      const res = createWalletSync();
+      setWalletResponse(res);
+      //Asynchornous Method
+      //const asyncWallet=await createWallet();
+      //setWalletResponse(asyncWallet);
+    } catch (error) {
+      console.log('Error', error);
+    }
   }
   return (
     <Container>

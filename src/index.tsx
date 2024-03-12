@@ -77,6 +77,11 @@ export function createWallet(
   return TronSdk.createWallet(passphrase);
 }
 
+export function createWalletSync(
+  passphrase: string = ''
+): CreateWalletResponse {
+  return TronSdk.createWalletSync(passphrase);
+}
 /**
  * Imports a wallet
  * @param seedPhrase The seed phrase to import
@@ -92,6 +97,17 @@ export function importWallet(
   }
   return TronSdk.importWallet(seedPhrase, passphrase);
 }
+
+export function importWalletSync(
+  seedPhrase: string,
+  passphrase: string = ''
+): ImportWallerResponse {
+  if (!seedPhrase) {
+    throw new Error('Seed phrase is required');
+  }
+  return TronSdk.importWalletSync(seedPhrase, passphrase);
+}
+
 /**
  * Signs a message
  * @param message The message to sign
@@ -121,7 +137,7 @@ export type SendTransactionOptions = {
 
 /**
  * Sends a transaction
- * @param options The transaction options 
+ * @param options The transaction options
  * @returns string
  *
  * The amount should be in SUN,See the example below
