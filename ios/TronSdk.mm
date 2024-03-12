@@ -9,4 +9,7 @@ RCT_EXTERN_METHOD(importWallet:(NSString *) mnemonic passphrase: (NSString *)pas
 RCT_EXTERN_METHOD(signMessage:(NSString *) message privatekey: (NSString *)privatekey resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(signTxId:(NSString *) txId privatekey: (NSString *)privatekey resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN__BLOCKING_SYNCHRONOUS_METHOD(createWalletSync:(NSString *)passPhrase)
+
+RCT_EXTERN__BLOCKING_SYNCHRONOUS_METHOD(importWalletSync:(NSString *) mnemonic passphrase: (NSString *)passphrase)
 @end
