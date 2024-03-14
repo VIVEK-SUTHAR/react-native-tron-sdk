@@ -2,7 +2,9 @@ global.Buffer = require('buffer').Buffer;
 
 import { NativeModules, Platform } from 'react-native';
 import sendTrxTransaction from './tron-api/sendTrxTransaction';
-import sendTrc20Transaction from './tron-api/sendTrc20Transaction';
+import sendTrc20Transaction, {
+  base58ToTronAddress,
+} from './tron-api/sendTrc20Transaction';
 import type { BroadcastTransactionResponse } from './tron-api/broadcastTransaction';
 import { TronRpc } from './tron-rpc';
 import 'react-native-get-random-values';
@@ -212,3 +214,5 @@ export function signTxId(txId: string, privateKey: string): Promise<string> {
   }
   return TronSdk.signTxId(txId, privateKey);
 }
+
+export { base58ToTronAddress };

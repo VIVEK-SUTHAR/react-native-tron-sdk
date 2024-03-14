@@ -27,5 +27,7 @@ export default async function triggerSmartContract(
 
     // If the response does not contain an error, return the data
     return jsonResponse;
-  } catch (error) {}
+  } catch (error) {
+    throw new Error("Error in Trigger SMart Contract",{cause:error})
+  }
 }

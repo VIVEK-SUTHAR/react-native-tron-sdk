@@ -101,7 +101,19 @@ export function decodeParams(
   }, []);
 }
 
-function base58ToTronAddress(base58Address: string) {
+/**
+ * Converts a base58 address to a hex address
+ * @param base58Address The base58 address
+ * @returns string
+ * @example
+ * ```javascript
+ * const hexAddress = base58ToTronAddress('TJr3sJXwLFWFt3Z6rC7Dym1aq2s6BhjEw3');
+ * console.log('Hex Address: ', hexAddress);
+ * ```
+ *
+ */
+
+export function base58ToTronAddress(base58Address: string) {
   // Decode the base58 address
   const decodedAddress = bs58.decode(base58Address);
   // Remove the last 4 bytes (checksum)
