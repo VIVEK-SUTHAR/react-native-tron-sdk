@@ -50,7 +50,7 @@ export default async function sendTrc20Transaction(
 }
 const ADDRESS_PREFIX_REGEX = /^(41)/;
 
-function encodeParams(inputs: any[]) {
+export function encodeParams(inputs: any[]) {
   const abiCoder = new AbiCoder();
   let typesValues = inputs;
   let parameters = '';

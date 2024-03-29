@@ -3,11 +3,11 @@ import React, { useState, type FC } from 'react';
 import Container from './Container';
 import Heading from './Heading';
 import CustomButton from './Button';
-import { getTransactions } from 'react-native-tron-sdk';
+import { getTransactions, init } from 'react-native-tron-sdk';
 import type { TronTransaction } from '../../../src/tron-api/accounts/getAllTrxTransactions';
-import { decodeParams } from '../../../src/tron-api/sendTrc20Transaction';
 import { displaySubstring } from '../util/withPerf';
-
+import { AbiCoder, Interface } from 'ethers';
+init('https://api.trongrid.io');
 const AllTransactions = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [allTransactions, setAllTransactions] = useState<TronTransaction[]>([]);
@@ -18,11 +18,31 @@ const AllTransactions = () => {
   const fetchAllTransactions = () => {
     // fetch all transactions
     getTransactions({
-      from: 'TBzqeS1xg8zkXp3crQS4G7H4tNGr4ZncVf',
+      from: 'TNsQUkfiMQX8txkPDYMYq7dy1NVjYHLuhA',
     })
       .then((response) => {
-        console.log('response', response);
-        setAllTransactions(response);
+        const f = response.filter(
+          (tx) =>
+            tx.ret &&
+            tx.ret[0] &&
+            tx.ret[0].contractRet === 'SUCCESS' &&
+            (tx.raw_data.contract[0].type === 'TransferContract' ||
+              tx.raw_data.contract[0].type === 'TriggerSmartContract')
+        );
+        setAllTransactions(f);
+
+        // console.log('Filtered: ', filtered.map((tx) => tx.ret));
+
+        // setAllTransactions(
+        //   response.filter(
+        //     (tx) =>
+        //       (tx.ret &&
+        //         tx.ret[0] &&
+        //         tx.ret[0].contractRet === 'SUCCESS' &&
+        //         tx.raw_data.contract[0].type === 'TransferContract') ||
+        //       tx.raw_data.contract[0].type === 'TriggerSmartContract'
+        //   )
+        // );
       })
       .catch((error) => {
         console.log('Error: ', error);
@@ -72,24 +92,31 @@ const SingleTransactionCard = ({
 }: {
   transaction: TronTransaction;
 }) => {
+  console.log('Transaction: ', transaction.ret);
+
   const from = transaction.raw_data.contract[0].parameter.value.owner_address;
   const to =
     transaction.raw_data.contract[0].type === 'TransferContract'
       ? transaction.raw_data.contract[0].parameter.value.to_address
       : transaction.raw_data.contract[0].parameter.value.contract_address;
-
-  const amount =
-    transaction.raw_data.contract[0].type === 'TransferContract'
-      ? transaction.raw_data.contract[0].parameter.value.amount
-      : transaction.raw_data.contract[0].type === 'TriggerSmartContract'
-        ? parseInt(
-            decodeParams(
-              ['address', 'uint256'],
-              transaction.raw_data.contract[0].parameter.value.data,
-              true
-            )[1]
-          ) / 1000000
-        : 0;
+  let amount = 0;
+  try {
+    amount =
+      transaction.raw_data.contract[0].type === 'TransferContract'
+        ? transaction.raw_data.contract[0].parameter.value.amount
+        : transaction.raw_data.contract[0].type === 'TriggerSmartContract'
+          ? parseInt(
+              decodeParams(
+                ['address', 'uint256'],
+                transaction.raw_data.contract[0].parameter.value.data,
+                true
+              )[1]
+            ) / 1000000
+          : 0;
+  } catch (error) {
+    console.log('Error: ', error);
+    amount = 0;
+  }
 
   return (
     <View>
@@ -117,3 +144,30 @@ const SingleTransactionCard = ({
 };
 
 export default AllTransactions;
+
+const ADDRESS_PREFIX_REGEX = /^(41)/;
+const ADDRESS_PREFIX = '41';
+function decodeParams(types, output, ignoreMethodHash) {
+  console.log('Failed to decode output: ' + output);
+
+  if (!output || typeof output === 'boolean') {
+    ignoreMethodHash = output;
+    output = types;
+  }
+
+  if (ignoreMethodHash && output.replace(/^0x/, '').length % 64 === 8)
+    output = '0x' + output.replace(/^0x/, '').substring(8);
+
+  const abiCoder = new AbiCoder();
+
+  if (output.replace(/^0x/, '').length % 64)
+    throw new Error(
+      'The encoded string is not valid. Its length must be a multiple of 64.'
+    );
+  return abiCoder.decode(types, output).reduce((obj, arg, index) => {
+    if (types[index] == 'address')
+      arg = ADDRESS_PREFIX + arg.substr(2).toLowerCase();
+    obj.push(arg);
+    return obj;
+  }, []);
+}

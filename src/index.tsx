@@ -2,6 +2,7 @@ global.Buffer = require('buffer').Buffer;
 
 import { NativeModules, Platform } from 'react-native';
 import sendTrxTransaction from './tron-api/sendTrxTransaction';
+import _getTokenBalance from './tron-api/accounts/getTokenBalance';
 import sendTrc20Transaction, {
   base58ToTronAddress,
 } from './tron-api/sendTrc20Transaction';
@@ -213,6 +214,17 @@ export function signTxId(txId: string, privateKey: string): Promise<string> {
     throw new Error('Private key is required');
   }
   return TronSdk.signTxId(txId, privateKey);
+}
+
+export type GetTokenBalanceResponse = {
+  balance: number;
+  decimals: number;
+};
+export function getTokenBalance(
+  address: string,
+  tokenAddress: string
+): Promise<GetTokenBalanceResponse> {
+  return _getTokenBalance({ address, tokenAddress });
 }
 
 export { base58ToTronAddress };
