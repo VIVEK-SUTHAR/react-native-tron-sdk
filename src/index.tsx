@@ -13,6 +13,7 @@ import '@ethersproject/shims';
 import getAllTransactions, {
   type TransactionsRequest,
 } from './tron-api/accounts/getAllTrxTransactions';
+import createTransaction from './tron-api/createTransaction';
 const LINKING_ERROR =
   `The package 'react-native-tron-sdk' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
@@ -178,6 +179,8 @@ export function sendTransaction(
   }
   return sendTrc20Transaction(options);
 }
+
+export { createTransaction };
 
 /**
  * 1 TRX = 1,000,000 SUN
