@@ -2,6 +2,7 @@ global.Buffer = require('buffer').Buffer;
 
 import { NativeModules, Platform } from 'react-native';
 import sendTrxTransaction from './tron-api/sendTrxTransaction';
+import triggerSmartContract from './tron-api/triggerSmartContract';
 import _getTokenBalance from './tron-api/accounts/getTokenBalance';
 import sendTrc20Transaction, {
   base58ToTronAddress,
@@ -180,7 +181,7 @@ export function sendTransaction(
   return sendTrc20Transaction(options);
 }
 
-export { createTransaction };
+export { createTransaction,triggerSmartContract };
 
 /**
  * 1 TRX = 1,000,000 SUN
