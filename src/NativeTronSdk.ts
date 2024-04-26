@@ -1,10 +1,12 @@
 import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
-import type {
-  CreateWalletResponse,
-  ImportWallerResponse,
-} from 'react-native-tron-sdk';
 
+type CreateWalletResponse = {
+  privateKey: string;
+  publicKey: string;
+  seedPhrase: string;
+};
+type ImportWallerResponse = CreateWalletResponse;
 export interface Spec extends TurboModule {
   createWallet(passPhrase?: string): Promise<CreateWalletResponse>;
   importWallet(

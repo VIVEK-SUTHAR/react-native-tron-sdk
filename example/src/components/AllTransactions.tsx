@@ -6,7 +6,7 @@ import CustomButton from './Button';
 import { getTransactions, init } from 'react-native-tron-sdk';
 import type { TronTransaction } from '../../../src/tron-api/accounts/getAllTrxTransactions';
 import { displaySubstring } from '../util/withPerf';
-import { AbiCoder, Interface } from 'ethers';
+import { AbiCoder } from 'ethers';
 init('https://api.trongrid.io');
 const AllTransactions = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -145,9 +145,9 @@ const SingleTransactionCard = ({
 
 export default AllTransactions;
 
-const ADDRESS_PREFIX_REGEX = /^(41)/;
 const ADDRESS_PREFIX = '41';
-function decodeParams(types, output, ignoreMethodHash) {
+
+function decodeParams(types: any, output: any, ignoreMethodHash: boolean) {
   console.log('Failed to decode output: ' + output);
 
   if (!output || typeof output === 'boolean') {
@@ -165,7 +165,7 @@ function decodeParams(types, output, ignoreMethodHash) {
       'The encoded string is not valid. Its length must be a multiple of 64.'
     );
   return abiCoder.decode(types, output).reduce((obj, arg, index) => {
-    if (types[index] == 'address')
+    if (types[index] === 'address')
       arg = ADDRESS_PREFIX + arg.substr(2).toLowerCase();
     obj.push(arg);
     return obj;

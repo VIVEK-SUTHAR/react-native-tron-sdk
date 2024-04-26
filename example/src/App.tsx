@@ -8,27 +8,33 @@ import SendTransaction from './components/SendTransaction';
 import Heading from './components/Heading';
 import SendTRC20Transaction from './components/SendTRC20Txn';
 import AllTransactions from './components/AllTransactions';
-import { getTokenBalance, init } from 'react-native-tron-sdk';
-init('https://api.trongrid.io');
-export default function App() {
+import estimateTrc20TransferEnergy from '../../src/tron-api/estimateTrc20TransferEnergy';
+import Container from './components/Container';
+import Row from './components/Row';
 
-  React.useEffect
-  (()=>{
-    console.log('App');
-    
-    getTokenBalance(
-      'TUSDrNLjGLLyGTP95AVWPfk65DLJTdGA2R',
-      'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
-    )
-      .then((re) => {
-        console.log('res', re);
+//@ts-expect-error
+const uiManager = global?.nativeFabricUIManager ? 'Fabric' : 'Paper';
+const isNewArchitectureEnabled = String(uiManager === 'Fabric');
+//@ts-expect-error
+const isBridgeless = String(global.RN$Bridgeless === true);
+//@ts-expect-error
+const isInterOpEnabled = String(global.RN$TurboInterop === true);
+export default function App() {
+  React.useEffect(() => {
+    estimateTrc20TransferEnergy({
+      amount: 500000000,
+      contract_address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      owner_address: 'TAj7Ud7aoeeXAukpfJW5k1XRfwKLT9bnzU',
+      to_address: 'TTCb3uWdPMo7nVC8gxf2nehJ1V71ZL1Ne7',
+    })
+      .then((r) => {
+        console.log(r);
       })
       .catch((e) => {
-        console.log('err', e);
+        console.log(e);
       });
-  
-  },[])
-  
+  }, []);
+
   return (
     <SafeAreaView style={styles.flex1}>
       <StatusBar barStyle="light-content" backgroundColor={'#0F0F0F'} />
@@ -37,6 +43,7 @@ export default function App() {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
+        <Details />
         <Heading title="Tron Examples" />
         <AllTransactions />
         <CreateWallet />
@@ -48,7 +55,6 @@ export default function App() {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   flex1: {
     flex: 1,
@@ -67,3 +73,14 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
 });
+
+function Details() {
+  return (
+    <Container>
+      <Row title="UI Manager" value={uiManager} />
+      <Row title="New Architecture" value={isNewArchitectureEnabled} />
+      <Row title="Bridgeless Mode" value={isBridgeless} />
+      <Row title="Interop Mode" value={isInterOpEnabled} />
+    </Container>
+  );
+}
