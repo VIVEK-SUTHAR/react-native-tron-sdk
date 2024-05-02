@@ -9,13 +9,10 @@ import Heading from './components/Heading';
 import SendTRC20Transaction from './components/SendTRC20Txn';
 import AllTransactions from './components/AllTransactions';
 import { getTokenBalance, init } from 'react-native-tron-sdk';
+import NetworkWallet from './components/NetworkWallet';
 init('https://api.trongrid.io');
 export default function App() {
-
-  React.useEffect
-  (()=>{
-    console.log('App');
-    
+  React.useEffect(() => {
     getTokenBalance(
       'TUSDrNLjGLLyGTP95AVWPfk65DLJTdGA2R',
       'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
@@ -26,9 +23,8 @@ export default function App() {
       .catch((e) => {
         console.log('err', e);
       });
-  
-  },[])
-  
+  }, []);
+
   return (
     <SafeAreaView style={styles.flex1}>
       <StatusBar barStyle="light-content" backgroundColor={'#0F0F0F'} />
@@ -38,6 +34,7 @@ export default function App() {
         contentContainerStyle={styles.contentContainer}
       >
         <Heading title="Tron Examples" />
+        <NetworkWallet />
         <AllTransactions />
         <CreateWallet />
         <ImportWallet />
