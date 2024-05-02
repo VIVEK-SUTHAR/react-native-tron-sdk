@@ -12,4 +12,6 @@ RCT_EXTERN_METHOD(signTxId:(NSString *) txId privatekey: (NSString *)privatekey 
 RCT_EXTERN__BLOCKING_SYNCHRONOUS_METHOD(createWalletSync:(NSString *)passPhrase)
 
 RCT_EXTERN__BLOCKING_SYNCHRONOUS_METHOD(importWalletSync:(NSString *) mnemonic passphrase: (NSString *)passphrase)
+
+RCT_EXTERN__BLOCKING_SYNCHRONOUS_METHOD(importNetworkWalletSync:(NSString *)seedPhrase networkName:(NSString *)networkName passPhrase:(NSString *)passPhrase)
 @end

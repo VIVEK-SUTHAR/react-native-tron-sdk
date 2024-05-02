@@ -1,6 +1,12 @@
 package com.tronsdk
 
+import android.util.Log
+import wallet.core.jni.Base58
+import wallet.core.jni.PrivateKey
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 import kotlin.experimental.and
+
 
 // TODO: Move to native
 object Numeric {
@@ -60,5 +66,25 @@ object Numeric {
 
   fun toHexString(input: ByteArray?): String {
     return toHexString(input, 0, input!!.size, false)
+  }
+
+   fun make64BytesPrivateKey(privateKey: PrivateKey): String? {
+    val outputStream = ByteArrayOutputStream()
+    try {
+      outputStream.write(privateKey.data())
+      outputStream.write(privateKey.publicKeyEd25519.data())
+    } catch (e: Exception) {
+      e.printStackTrace()
+    }
+    val fullBytes = outputStream.toByteArray()
+    val encodedPrivateKey = Base58.encodeNoCheck(fullBytes)
+    if (outputStream != null) {
+      try {
+        outputStream.close()
+      } catch (e: IOException) {
+        e.printStackTrace()
+      }
+    }
+    return encodedPrivateKey
   }
 }

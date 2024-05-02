@@ -91,5 +91,47 @@ class TronSdk: NSObject {
         resolver(output.signature.hexString)
         
     }
+
+    @objc 
+    func importNetworkWalletSync(_ seedPhrase:String,networkName:String,passPhrase:String)->NSDictionary{
+     let coin=getCoinFromNetwork(networkName: networkName);
+        let wallet = HDWallet(mnemonic: seedPhrase, passphrase: passPhrase)
+        let publicKey=wallet?.getAddressForCoin(coin: coin)
+        let rawPrivatekey=wallet?.getKeyForCoin(coin: coin)
+        let resPrivateKey: String? = networkName == "solana" ? make64BytesPrivateKey(privateKey: rawPrivatekey!) : rawPrivatekey?.data.hexString
+
+        let result: NSDictionary = [
+            "publicKey": publicKey!,
+            "privateKey":resPrivateKey!,
+        ]
+        return result
+    }
     
+    private func getCoinFromNetwork(networkName:String)->CoinType{
+        switch networkName {
+        case "solana":
+            return .solana
+        case "bitcoin":
+            return .bitcoin
+        case "ethereum":
+            return .ethereum
+        case "tron":
+            return .tron
+        case "dogecoin":
+            return .dogecoin
+        default:
+            return .bitcoin
+        }
+    }
+    
+    func make64BytesPrivateKey(privateKey: PrivateKey) -> String {
+        var outputStream = Data()
+        outputStream.append(privateKey.data)
+        outputStream.append(privateKey.getPublicKeyEd25519().data)
+        let encodedPrivateKey = Base58.encodeNoCheck(data: outputStream)
+        let log = String(format: "### solana 64bytes private key bs58 : %@", encodedPrivateKey)
+        print(log)
+
+        return encodedPrivateKey
+    }
 }

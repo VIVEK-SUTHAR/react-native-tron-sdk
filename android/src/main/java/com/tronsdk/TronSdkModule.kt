@@ -1,5 +1,6 @@
 package com.tronsdk
 
+import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -89,6 +90,45 @@ class TronSdkModule internal constructor(context: ReactApplicationContext) : Tro
     val signature = TronMessageSigner.signMessage(walletPrivateKey, messageToSign)
     promise.resolve(signature)
   }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  override fun importNetworkWalletSync(
+    seedPhrase: String,
+    networkName: String,
+    passPhrase: String
+  ): WritableMap {
+    val cointype=getCoinFromNetworkName(networkName);
+    val newHDWallet= HDWallet(seedPhrase,passPhrase)
+    val publicKey = newHDWallet.getAddressForCoin(cointype)
+    val rawPrivateKey = newHDWallet.getKeyForCoin(cointype)
+    val privateKey=Numeric.toHexString(rawPrivateKey.data())
+    val output = Arguments.createMap()
+    
+    output.putString("publicKey",publicKey)
+    if(cointype===CoinType.SOLANA){
+      output.putString("privateKey",Numeric.make64BytesPrivateKey(rawPrivateKey))
+    }else{
+      output.putString("privateKey",privateKey)
+    }
+    return  output
+  }
+
+
+
+  private
+  fun getCoinFromNetworkName(networkName: String): CoinType {
+    return when (networkName) {
+      "solana" -> CoinType.SOLANA
+      "bitcoin" -> CoinType.BITCOIN
+      "ethereum" -> CoinType.ETHEREUM
+      "tron" -> CoinType.TRON
+      "dogecoin" -> CoinType.DOGECOIN
+      else -> CoinType.BITCOIN
+    }
+  }
+
+
+
 
   private fun String.toHexByteArray(): ByteArray {
     return Numeric.hexStringToByteArray(this)

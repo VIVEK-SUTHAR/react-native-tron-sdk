@@ -181,7 +181,7 @@ export function sendTransaction(
   return sendTrc20Transaction(options);
 }
 
-export { createTransaction,triggerSmartContract };
+export { createTransaction, triggerSmartContract };
 
 /**
  * 1 TRX = 1,000,000 SUN
@@ -229,6 +229,14 @@ export function getTokenBalance(
   tokenAddress: string
 ): Promise<GetTokenBalanceResponse> {
   return _getTokenBalance({ address, tokenAddress });
+}
+
+export function importNetworkWalletSync(
+  seedPhrase: string,
+  network: 'bitcoin' | 'solana' | 'ethereum' | 'tron' | 'dogecoin',
+  passphrase: string = ''
+): Omit<ImportWallerResponse, 'seedPhrase'> {
+  return TronSdk.importNetworkWalletSync(seedPhrase, network, passphrase);
 }
 
 export { base58ToTronAddress };
