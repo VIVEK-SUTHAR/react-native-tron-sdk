@@ -91,17 +91,52 @@ class TronSdk: NSObject {
         resolver(output.signature.hexString)
         
     }
+    
+    @objc
+    func isValidMnemonic(_ seedPhrase: String) -> NSDictionary {
+       
+        let isValid=Mnemonic.isValid(mnemonic: seedPhrase)
+        let result: NSDictionary = [
+            "isValid":isValid
+        ]
+        return result
+    }
 
-    @objc 
-    func importNetworkWalletSync(_ seedPhrase:String,networkName:String,passPhrase:String)->NSDictionary{
-     let coin=getCoinFromNetwork(networkName: networkName);
+    @objc
+    func importNetworkWalletSync(_ seedPhrase:String,networkName:String,passPhrase:String,derivationPath:String)->NSDictionary{
+        let coin=getCoinFromNetwork(networkName: networkName);
         let wallet = HDWallet(mnemonic: seedPhrase, passphrase: passPhrase)
-        let publicKey=wallet?.getAddressForCoin(coin: coin)
+        
+        let publicKey:String;
+        
+        if(!derivationPath.isEmpty){
+            if(coin == CoinType.ethereum){
+                let key = wallet?.getKey(coin: .ethereum, derivationPath: derivationPath)
+                let address=CoinType.ethereum.deriveAddress(privateKey: key!)
+                let result: NSDictionary = [
+                    "publicKey": address,
+                    "privateKey":key!.data.hexString,
+                ]
+                return result
+            }
+            if(coin == CoinType.solana){
+                let key = wallet?.getKey(coin: .solana, derivationPath: derivationPath)
+                let solAddress = CoinType.solana.deriveAddress(privateKey: key!)
+                let result: NSDictionary = [
+                    "publicKey": solAddress,
+                    "privateKey":make64BytesPrivateKey(privateKey: key!),
+                ]
+                return result
+            }
+            publicKey=(wallet?.getAddressForCoin(coin: coin))!
+        }else{
+            publicKey=(wallet?.getAddressForCoin(coin: coin))!
+        }
         let rawPrivatekey=wallet?.getKeyForCoin(coin: coin)
         let resPrivateKey: String? = networkName == "solana" ? make64BytesPrivateKey(privateKey: rawPrivatekey!) : rawPrivatekey?.data.hexString
 
         let result: NSDictionary = [
-            "publicKey": publicKey!,
+            "publicKey": publicKey,
             "privateKey":resPrivateKey!,
         ]
         return result

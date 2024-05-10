@@ -9,7 +9,10 @@ import com.facebook.react.bridge.WritableMap
 import com.google.protobuf.ByteString
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
+import wallet.core.jni.Derivation
+import wallet.core.jni.DerivationPath
 import wallet.core.jni.HDWallet
+import wallet.core.jni.Mnemonic
 import wallet.core.jni.PrivateKey
 import wallet.core.jni.TronMessageSigner
 import wallet.core.jni.proto.Tron
@@ -69,8 +72,8 @@ class TronSdkModule internal constructor(context: ReactApplicationContext) : Tro
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
-  override fun importWalletSync(seedPhrase: String, passPhrase: String?):WritableMap {
-    return _importWallet(seedPhrase,passPhrase)
+  override fun importWalletSync(seedPhrase: String, passPhrase: String?): WritableMap {
+    return _importWallet(seedPhrase, passPhrase)
   }
 
 
@@ -92,28 +95,52 @@ class TronSdkModule internal constructor(context: ReactApplicationContext) : Tro
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
+  override fun isValidMnemonic(seedPhrase: String): Boolean {
+    return Mnemonic.isValid(seedPhrase)
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
   override fun importNetworkWalletSync(
     seedPhrase: String,
     networkName: String,
-    passPhrase: String
+    passPhrase: String,
+    derivationPath: String
   ): WritableMap {
-    val cointype=getCoinFromNetworkName(networkName);
-    val newHDWallet= HDWallet(seedPhrase,passPhrase)
-    val publicKey = newHDWallet.getAddressForCoin(cointype)
-    val rawPrivateKey = newHDWallet.getKeyForCoin(cointype)
-    val privateKey=Numeric.toHexString(rawPrivateKey.data())
+    val cointype = getCoinFromNetworkName(networkName);
+    val newHDWallet = HDWallet(seedPhrase, passPhrase)
+    var publicKey: String = ""
     val output = Arguments.createMap()
-    
-    output.putString("publicKey",publicKey)
-    if(cointype===CoinType.SOLANA){
-      output.putString("privateKey",Numeric.make64BytesPrivateKey(rawPrivateKey))
-    }else{
-      output.putString("privateKey",privateKey)
+    if (derivationPath.isNotEmpty()) {
+      if (cointype === CoinType.ETHEREUM) {
+        val pk = newHDWallet.getKey(CoinType.ETHEREUM, derivationPath);
+        publicKey = CoinType.ETHEREUM.deriveAddress(pk)
+        val privateKey = Numeric.toHexString(pk.data())
+        output.putString("publicKey", publicKey)
+        output.putString("privateKey", privateKey)
+        return output
+      }
+      if (cointype === CoinType.SOLANA) {
+        val pk = newHDWallet.getKey(CoinType.SOLANA, derivationPath)
+        publicKey = CoinType.SOLANA.deriveAddress(pk)
+        output.putString("publicKey", publicKey)
+        output.putString("privateKey", Numeric.make64BytesPrivateKey(pk))
+        return  output
+      } else {
+        publicKey = newHDWallet.getAddressDerivation(cointype, Derivation.DEFAULT)
+      }
+    } else {
+      publicKey = newHDWallet.getAddressForCoin(cointype)
     }
-    return  output
+    val rawPrivateKey = newHDWallet.getKeyForCoin(cointype)
+    val privateKey = Numeric.toHexString(rawPrivateKey.data())
+    output.putString("publicKey", publicKey)
+    if (cointype === CoinType.SOLANA) {
+      output.putString("privateKey", Numeric.make64BytesPrivateKey(rawPrivateKey))
+    } else {
+      output.putString("privateKey", privateKey)
+    }
+    return output
   }
-
-
 
   private
   fun getCoinFromNetworkName(networkName: String): CoinType {
@@ -126,8 +153,6 @@ class TronSdkModule internal constructor(context: ReactApplicationContext) : Tro
       else -> CoinType.BITCOIN
     }
   }
-
-
 
 
   private fun String.toHexByteArray(): ByteArray {

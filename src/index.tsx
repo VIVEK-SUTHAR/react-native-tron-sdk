@@ -234,9 +234,20 @@ export function getTokenBalance(
 export function importNetworkWalletSync(
   seedPhrase: string,
   network: 'bitcoin' | 'solana' | 'ethereum' | 'tron' | 'dogecoin',
-  passphrase: string = ''
+  passphrase: string = '',
+  derivationPath: string = ''
 ): Omit<ImportWallerResponse, 'seedPhrase'> {
-  return TronSdk.importNetworkWalletSync(seedPhrase, network, passphrase);
+  return TronSdk.importNetworkWalletSync(
+    seedPhrase,
+    network,
+    passphrase,
+    derivationPath
+  );
+}
+
+export function isValidMnemonic(seedPhrase: string) {
+  if (Platform.OS === 'ios') return TronSdk.isValidMnemonic(seedPhrase).isValid;
+  return TronSdk.isValidMnemonic(seedPhrase);
 }
 
 export { base58ToTronAddress };

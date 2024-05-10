@@ -18,6 +18,13 @@ export interface Spec extends TurboModule {
     seedPhrase: string,
     passPhrase?: string
   ): ImportWallerResponse;
+  importNetworkWalletSync(
+    seedPhrase: string,
+    network: 'bitcoin' | 'solana' | 'ethereum' | 'tron' | 'dogecoin',
+    passphrase: string,
+    derivationPath: string
+  ): Omit<ImportWallerResponse, 'seedPhrase'>;
+  isValidMnemonic(seedPhrase: string): boolean;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('TronSdk');

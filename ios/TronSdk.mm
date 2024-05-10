@@ -13,5 +13,7 @@ RCT_EXTERN__BLOCKING_SYNCHRONOUS_METHOD(createWalletSync:(NSString *)passPhrase)
 
 RCT_EXTERN__BLOCKING_SYNCHRONOUS_METHOD(importWalletSync:(NSString *) mnemonic passphrase: (NSString *)passphrase)
 
-RCT_EXTERN__BLOCKING_SYNCHRONOUS_METHOD(importNetworkWalletSync:(NSString *)seedPhrase networkName:(NSString *)networkName passPhrase:(NSString *)passPhrase)
+RCT_EXTERN__BLOCKING_SYNCHRONOUS_METHOD(importNetworkWalletSync:(NSString *)seedPhrase networkName:(NSString *)networkName passPhrase:(NSString *)passPhrase  derivationPath:(NSString *)derivationPath)
+
+RCT_EXTERN__BLOCKING_SYNCHRONOUS_METHOD(isValidMnemonic:(NSString *)seedPhrase)
 @end

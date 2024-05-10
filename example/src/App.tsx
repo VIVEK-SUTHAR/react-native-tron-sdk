@@ -10,6 +10,7 @@ import SendTRC20Transaction from './components/SendTRC20Txn';
 import AllTransactions from './components/AllTransactions';
 import { getTokenBalance, init } from 'react-native-tron-sdk';
 import NetworkWallet from './components/NetworkWallet';
+import IsValidMnemonic from './components/IsValidMnemonic';
 init('https://api.trongrid.io');
 export default function App() {
   React.useEffect(() => {
@@ -34,6 +35,7 @@ export default function App() {
         contentContainerStyle={styles.contentContainer}
       >
         <Heading title="Tron Examples" />
+        <IsValidMnemonic />
         <NetworkWallet />
         <AllTransactions />
         <CreateWallet />

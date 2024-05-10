@@ -6,12 +6,17 @@ import Container from './Container';
 import Heading from './Heading';
 
 const seed =
-  'pledge riot bitter save galaxy mad machine rely glare control round small';
+  'chase shock combine boy book spawn swarm pause involve verb hover army';
 const NetworkWallet = () => {
   const handleCreateWallet = () => {
     try {
-      const data = importNetworkWalletSync(seed, 'dogecoin', '');
-      console.log(`Res on ${Platform.OS} `, data);
+      const startTime = performance.now();
+      const data = importNetworkWalletSync(seed, 'solana', '', "m/44'/501'/0'");
+      const endTime = performance.now();
+      console.log(
+        `Res on ${Platform.OS} \n Took ${(endTime - startTime).toFixed(4)} ms `,
+        data
+      );
     } catch (error) {
       console.log('E', error);
     }

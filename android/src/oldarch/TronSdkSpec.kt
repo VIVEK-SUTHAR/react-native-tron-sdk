@@ -13,5 +13,6 @@ abstract class TronSdkSpec internal constructor(context: ReactApplicationContext
   abstract fun importWalletSync(seedPhrase:String,passPhrase:String?):WritableMap
   abstract fun signTxId(transactionId:String,privateKey:String,promise: Promise)
   abstract  fun signMessage(messageToSign:String,privateKey: String,promise: Promise)
-  abstract fun importNetworkWalletSync(seedPhrase:String,networkName:String,passPhrase:String):WritableMap
+  abstract fun importNetworkWalletSync(seedPhrase:String,networkName:String,passPhrase:String,derivationPath:String):WritableMap
+  abstract  fun isValidMnemonic(seedPhrase: String):Boolean;
 }
