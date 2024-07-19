@@ -28,12 +28,14 @@ async function getContractDecimals({
       },
     });
     let responseJson = await response.json();
+
     const decoded = decodeParams(
       ['uint256'],
       `0x${responseJson?.constant_result}`,
       false
     );
     const decimals = parseInt(decoded[0]);
+
     ResponseCache.set(tokenAddress, decimals);
     return decimals;
   } catch (error) {

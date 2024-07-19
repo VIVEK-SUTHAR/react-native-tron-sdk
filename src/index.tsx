@@ -15,6 +15,7 @@ import getAllTransactions, {
   type TransactionsRequest,
 } from './tron-api/accounts/getAllTrxTransactions';
 import createTransaction from './tron-api/createTransaction';
+import getContractDecimals from './tron-api/getContractDecimals';
 const LINKING_ERROR =
   `The package 'react-native-tron-sdk' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
@@ -231,6 +232,16 @@ export function getTokenBalance(
   return _getTokenBalance({ address, tokenAddress });
 }
 
+export type GetTokenDecimalsResponse = number | undefined;
+export function getTokenDecimals(
+  address: string,
+  tokenContractAddress: string
+): Promise<GetTokenDecimalsResponse> {
+  return getContractDecimals({
+    address: address,
+    tokenAddress: tokenContractAddress,
+  });
+}
 export function importNetworkWalletSync(
   seedPhrase: string,
   network: 'bitcoin' | 'solana' | 'ethereum' | 'tron' | 'dogecoin',

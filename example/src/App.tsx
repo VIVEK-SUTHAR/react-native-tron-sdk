@@ -11,6 +11,7 @@ import AllTransactions from './components/AllTransactions';
 import { getTokenBalance, init } from 'react-native-tron-sdk';
 import NetworkWallet from './components/NetworkWallet';
 import IsValidMnemonic from './components/IsValidMnemonic';
+import TokenDecimals from './components/TokenDecimals';
 init('https://api.trongrid.io');
 export default function App() {
   React.useEffect(() => {
@@ -42,6 +43,7 @@ export default function App() {
         <ImportWallet />
         <SendTransaction />
         <SendTRC20Transaction />
+        <TokenDecimals />
         <SignMessage />
       </ScrollView>
     </SafeAreaView>
